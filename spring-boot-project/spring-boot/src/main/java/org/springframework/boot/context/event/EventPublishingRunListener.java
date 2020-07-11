@@ -45,17 +45,28 @@ import org.springframework.util.ErrorHandler;
  */
 public class EventPublishingRunListener implements SpringApplicationRunListener, Ordered {
 
+	/**
+	 * Spring 应用
+	 */
 	private final SpringApplication application;
 
+	/**
+	 * 参数集合
+	 */
 	private final String[] args;
 
+	/**
+	 * 事件广播器
+	 */
 	private final SimpleApplicationEventMulticaster initialMulticaster;
 
 	public EventPublishingRunListener(SpringApplication application, String[] args) {
 		this.application = application;
 		this.args = args;
+		// 创建事件广播器
 		this.initialMulticaster = new SimpleApplicationEventMulticaster();
 		for (ApplicationListener<?> listener : application.getListeners()) {
+			// 添加应用监听器到事件广播器中
 			this.initialMulticaster.addApplicationListener(listener);
 		}
 	}
@@ -110,8 +121,7 @@ public class EventPublishingRunListener implements SpringApplicationRunListener,
 			// Listeners have been registered to the application context so we should
 			// use it at this point if we can
 			context.publishEvent(event);
-		}
-		else {
+		} else {
 			// An inactive context may not have a multicaster so we use our multicaster to
 			// call all of the context's listeners instead
 			if (context instanceof AbstractApplicationContext) {
